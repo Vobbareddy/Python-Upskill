@@ -1,0 +1,15 @@
+Link to Question - https://platform.stratascratch.com/coding/10172-best-selling-item?code_type=1
+
+-- SQL
+with cte as (
+Select description,extract(Month from invoicedate) as month,sum(unitprice * quantity) as tot_revenue
+from online_retail
+group by 1,2),cte2 as (
+Select month,max(tot_revenue) as amount
+from cte
+group by 1
+order by 1)
+Select cte.* from cte
+join cte2 on cte.month = cte2.month and cte.tot_revenue = cte2.amount
+
+-- Python
