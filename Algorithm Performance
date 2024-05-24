@@ -1,0 +1,25 @@
+-- Link to problem - https://platform.stratascratch.com/coding/10350-algorithm-performance?code_type=1
+-- SQL Solution 
+With cte as 
+(
+Select Search_id,
+case when clicked = 0 then  1
+     when clicked = 1 and search_results_position > 3 then 2
+     when search_results_position <= 3 then 3 end as rating
+from fb_search_events
+
+)
+
+select search_id, max(rating) as max_rating
+from cte
+group by search_id
+
+-- Python solution
+
+import pandas as pd
+import numpy as np
+fb_search_events['rating'] = 1
+fb_search_events.loc[fb_search_events['clicked']==0,'rating'] = 1
+fb_search_events.loc[(fb_search_events['clicked']==1) & (fb_search_events['search_results_position']>3),'rating'] = 2
+fb_search_events.loc[(fb_search_events['clicked']==1) & (fb_search_events['search_results_position']<=3),'rating'] = 3
+df = fb_search_events.groupby(['search_id'],as_index = False)['rating'].max()
