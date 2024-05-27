@@ -13,3 +13,10 @@ Select cte.* from cte
 join cte2 on cte.month = cte2.month and cte.tot_revenue = cte2.amount
 
 -- Python
+import pandas as pd
+
+online_retail['Month'] = online_retail['invoicedate'].dt.month
+online_retail['sales'] = online_retail.quantity * online_retail.unitprice
+df=online_retail.groupby(['Month','description'],as_index=False)['sales'].sum()
+df_1 = df.groupby(['Month'],as_index=False)['sales'].max()
+pd.merge(df,df_1,how='inner',on=['Month','sales'])
