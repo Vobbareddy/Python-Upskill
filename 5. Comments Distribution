@@ -16,3 +16,10 @@ from cte1
 group by 1;
 
 -- Python Solution
+import pandas as pd
+df = fb_users.merge(fb_comments,how='inner',left_on='id',right_on='user_id')[['user_id','joined_at','body','created_at']]
+df['joined_at'] = df['joined_at'].dt.date
+df['created_at'] = df['created_at'].dt.date
+df_ = df.loc[(df['joined_at']>=pd.to_datetime('2018-01-01')) & (df['joined_at']<=pd.to_datetime('2020-01-31')) & (df['created_at']>=pd.to_datetime('2020-01-01')) & (df['created_at']<= pd.to_datetime('2020-01-31'))]
+df = df_.groupby('user_id',as_index = False)['body'].nunique()[['user_id','body']]
+df.groupby('body',as_index=False)['user_id'].nunique()
