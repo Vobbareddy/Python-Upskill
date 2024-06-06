@@ -1,0 +1,15 @@
+-- https://platform.stratascratch.com/coding/10310-class-performance?code_type=1
+
+-- SQL solution
+with cte as
+(
+Select id,(assignment1 + assignment2 + assignment3) as score
+from box_scores
+)
+Select max(score) - min(score)
+from cte;
+
+-- Python Solution
+import pandas as pd
+box_scores['score'] = box_scores['assignment1'] + box_scores['assignment2'] + box_scores['assignment3']
+df = box_scores['score'].max() - box_scores['score'].min()
