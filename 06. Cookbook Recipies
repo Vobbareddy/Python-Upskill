@@ -1,0 +1,36 @@
+https://platform.stratascratch.com/coding/2089-cookbook-recipes?code_type=1
+
+-- SQL Solutions
+with max_ as(
+select max(page_number) as larg
+from cookbook_titles
+)
+,cte as (
+Select 0 as even_number
+union
+SELECT ROW_NUMBER() OVER (ORDER BY generate_series(0, larg/2)) * 2 AS even_number
+from max_
+)
+, cte2 as(
+select even_number as page_number,title
+from cte a left join cookbook_titles on even_number = page_number
+where even_number <= (select larg from max_)
+order by a.even_number
+)
+select a.page_number,a.title as left_title, b.title as right_title
+from cte2 a left join cookbook_titles b on b.page_number = a.page_number+1;
+
+-- Python
+
+import pandas as pd
+import numpy as np
+df = cookbook_titles
+max_page = df['page_number'].max()
+even_numbers = pd.DataFrame({
+    'even_number': np.arange(0, max_page + 1, 2)
+})
+even_with_titles = even_numbers.merge(df, left_on='even_number', right_on='page_number', how='left').rename(columns={'title': 'left_title'})
+even_with_titles['right_page_number'] = even_with_titles['even_number'] + 1
+final_result = even_with_titles.merge(df, left_on='right_page_number', right_on='page_number', how='left').rename(columns={'title': 'right_title'})
+final_result = final_result[['even_number', 'left_title', 'right_title']]
+
