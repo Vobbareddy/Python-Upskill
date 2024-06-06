@@ -1,0 +1,18 @@
+--https://platform.stratascratch.com/coding/10297-comments-distribution?code_type=1
+
+-- SQL Solution
+with cte1 as 
+(
+Select user_id,count( distinct body) as no_of_comments
+from fb_comments
+where user_id in (select id from fb_users
+where (joined_at) between '2018-01-01' and '2020-01-31')
+and extract(MOnth from created_at) = 1
+and extract(year from created_at) = 2020
+group by 1
+)
+Select no_of_comments,count(distinct user_id) as distribution
+from cte1
+group by 1;
+
+-- Python Solution
